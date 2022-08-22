@@ -1,17 +1,22 @@
 
 
 
-FROM mcr.microsoft.com/dotnet/core/sdk:5.0 AS build-env
-WORKDIR /app
 
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
 COPY *.csproj ./
+
 RUN dotnet restore
 
 COPY . ./
-RUN dotnet publish -c Release -o out
+FROM build AS publish
+RUN dotnet publish "ComponentProcessing.csproj" -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:5.0
+FROM base AS final
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ComponentProcessing.dll"]
-
