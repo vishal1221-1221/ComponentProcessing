@@ -66,7 +66,7 @@ namespace ComponentProcessing.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var request = new HttpRequestMessage(HttpMethod.Get, $"https://packageanddelivery.azurewebsites.net?comType={compDto.componentType}&quantity={compDto.quantity}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://packageanddelivery.azurewebsites.net/api/PackageAndDeliveryProcessing?comType={compDto.componentType}&quantity={compDto.quantity}");
             request.Headers.Add("Accept", "application/json");
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
